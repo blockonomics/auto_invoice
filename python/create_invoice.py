@@ -48,8 +48,8 @@ def decrypt(encrypted, passphrase):
 
 
 password = "hello".encode()
-print (encrypt(b'test ', password))
-#ct_b64 = "U2FsdGVkX1+ATH716DgsfPGjzmvhr+7+pzYfUzR+25u0D7Z5Lw04IJ+LmvPXJMpz"
-#pt = decrypt(ct_b64, password)
-#print("pt", pt)
+cipher = encrypt(b'test ', password)
+print cipher
+pt = decrypt(cipher, password)
+print pt
 #print("pt", decrypt(encrypt(pt, password), password))
