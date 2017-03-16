@@ -3,7 +3,7 @@
 - No need for approvals/API key/documentation. Use your own bitcoin address to
   receive funds.
 - Invoices are peer to peer encrypted. Bitcoin amount adjusts dynamically
-  according to [current price](https://medium.com/@blockonomics_co/peer-to-peer-no-signups-invoice-in-fiat-get-paid-in-bitcoin-f77772e4308b#.kayu1h1k0). Blockonomics support almost all fiat currencies.
+  according to [current price](https://medium.com/@blockonomics_co/peer-to-peer-no-signups-invoice-in-fiat-get-paid-in-bitcoin-f77772e4308b#.kayu1h1k0). Blockonomics supports almost all fiat currencies.
 - Can to used to implement workflows like reccuring invoices, generate/mail
   invoices from website.
 - If you need branding, custom logo/style in invoices you need to subscibe to [BitKart Plan](https://www.blockonomics.co/views/pricing.html) and mail blockonomics support to setup your branding.
