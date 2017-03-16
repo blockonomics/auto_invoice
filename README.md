@@ -5,21 +5,21 @@
 - Can to used to implement workflows like reccuring invoices, generate/mail
   invoices from website
 
-#Examples
-##Python
+# Examples
+## Python
 
 ```
-enigma@enigma-laptop:~/auto_invoice/python$ echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 10 -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a
+echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 10 -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a
 https://www.blockonomics.co/invoice/913/#/?key=sQm41g3y
 ```
 Currency can changed (default is USD)
 ```
-enigma@enigma-laptop:~/auto_invoice/python$ echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 20 --currency EUR -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a
+echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 20 --currency EUR -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a
 https://www.blockonomics.co/invoice/914/#/?key=zoLRxXKt
 
 ```
 Invoice expiry can be specified in days (default is 7 days)
 ```
-(blockonomics)enigma@enigma-laptop:~/auto_invoice/python$ echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 20 --currency EUR -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a --expiry 1
+echo "20 hours of html/css work in January 2017" | python create_invoice.py --amount 20 --currency EUR -addr 1Cg6QbAnbY2XmEMiQhp6AQwfc36tTwTH7a --expiry 1
 https://www.blockonomics.co/invoice/915/#/?key=q4mI3TSY
 ```
