@@ -5,7 +5,7 @@ import time
 import requests
 import json
 from util import generate_passphrase, encrypt
-BLOCKONOMICS_URL="http://localhost:8080"
+BLOCKONOMICS_URL="https://www.blockonomics.co"
 API_ENDPOINT="/api/invoice"
 
 def create_invoice(amount, currency, description, address, expiry):
