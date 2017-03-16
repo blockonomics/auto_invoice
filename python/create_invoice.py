@@ -1,55 +1,46 @@
-#!/usr/bin/python
-from Crypto import Random
-from Crypto.Cipher import AES
-import base64
-from hashlib import md5
+#!/usr/bin/env python
+import argparse
+import sys
+import time
+import requests
+import json
+from util import generate_passphrase, encrypt
+BLOCKONOMICS_URL="http://localhost:8080"
+API_ENDPOINT="/api/invoice"
 
-BLOCK_SIZE = 16
+def create_invoice(amount, currency, description, address, expiry):
+  passphrase = generate_passphrase(8)
+  invoice = dict(desc=description, timestamp=int(time.time()), addr=address,
+                 amount=amount, currency=currency, expiry=expiry*86400)
+  encrypted_invoice = encrypt(json.dumps(invoice), passphrase)
+  r = requests.post(BLOCKONOMICS_URL + API_ENDPOINT,
+                    json=dict(content=encrypted_invoice))
+  r.raise_for_status()
+  invoice_id =  r.json().get('number')
+  if (not invoice_id):
+    raise Exception("Server didn't return invoice number")
 
-def pad(data):
-    length = BLOCK_SIZE - (len(data) % BLOCK_SIZE)
-    return data + (chr(length)*length).encode()
-
-def unpad(data):
-    return data[:-(data[-1] if type(data[-1]) == int else ord(data[-1]))]
-
-def bytes_to_key(data, salt, output=48):
-    # extended from https://gist.github.com/gsakkis/4546068
-    assert len(salt) == 8, len(salt)
-    data += salt
-    key = md5(data).digest()
-    final_key = key
-    while len(final_key) < output:
-        key = md5(key + data).digest()
-        final_key += key
-    return final_key[:output]
-
-def encrypt(message, passphrase):
-    salt = '0b9c83b441172410'.decode('hex')
-    key_iv = bytes_to_key(passphrase, salt, 32+16)
-    key = key_iv[:32]
-    iv = key_iv[32:]
-    print key.encode('hex')
-    print iv.encode('hex')
-    aes = AES.new(key, AES.MODE_CBC, iv)
-    print aes.encrypt(pad(message)).encode('hex')
-    aes = AES.new(key, AES.MODE_CBC, iv)
-    return base64.b64encode(b"Salted__" + salt + aes.encrypt(pad(message)))
-
-def decrypt(encrypted, passphrase):
-    encrypted = base64.b64decode(encrypted)
-    assert encrypted[0:8] == b"Salted__"
-    salt = encrypted[8:16]
-    key_iv = bytes_to_key(passphrase, salt, 32+16)
-    key = key_iv[:32]
-    iv = key_iv[32:]
-    aes = AES.new(key, AES.MODE_CBC, iv)
-    return unpad(aes.decrypt(encrypted[16:]))
+  return "{}/invoice/{}/#/?key={}".format(BLOCKONOMICS_URL, invoice_id,
+                                          passphrase)
 
 
-password = "hello".encode()
-cipher = encrypt(b'test ', password)
-print cipher
-pt = decrypt(cipher, password)
-print pt
-#print("pt", decrypt(encrypt(pt, password), password))
+def main():
+  parser = argparse.ArgumentParser(description="Creates blockonomics invoice") 
+  parser.add_argument('infile', type=argparse.FileType('r'),
+                      default=sys.stdin, nargs="?", help="File containing invoice description"
+                      "(Default read from stdin)")
+  parser.add_argument("-a", "--amount", dest="amount", action="store", 
+                      required=True, type=float, help="Invoice Amount")
+  parser.add_argument("-addr", "--address", dest="address", action="store", 
+                      required=True, help="Receiving Bitcoin Address")
+  parser.add_argument("-c", "--currency", dest="cur", action="store", 
+                      required=False, default="USD", help="Invoice Currency(Default USD)")
+  parser.add_argument("-e", "--expiry", dest="expiry", action="store", 
+                      required=False, type=int, default=7, help="Invoice expiry in days(Default 7)")
+  args = parser.parse_args() 
+  description = args.infile.read()
+  print create_invoice(amount=args.amount, currency=args.cur,
+                 description=description, address=args.address, 
+                 expiry=args.expiry)
+if __name__ == "__main__":
+  main()

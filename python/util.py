@@ -49,12 +49,12 @@ def decrypt(encrypted, passphrase):
     aes = AES.new(key, AES.MODE_CBC, iv)
     return unpad(aes.decrypt(encrypted[16:]))
 
-def generate_passhrase(length):
+def generate_passphrase(length):
   chars = string.letters + string.digits
   return ''.join(random.choice(chars) for _ in range(length))
 
 if __name__ == "__main__":
-  passphrase = generate_passhrase(8)
+  passphrase = generate_passphrase(8)
   pt = b'Hi Blockonomics!'
   ct = encrypt(pt, passphrase)
   decrypted_ct = decrypt(ct, passphrase)
